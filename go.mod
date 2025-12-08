@@ -1,3 +1,3 @@
-module github.com/mjbma/MjGoLogger
+module github.com/mjbmarques/MjGoLogger
 
 go 1.21

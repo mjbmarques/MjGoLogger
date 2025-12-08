@@ -12,7 +12,7 @@ A Go library for file-based logging with multiple severity levels and automatic 
 ## Installation
 
 ```bash
-go get github.com/mjbma/MjGoLogger
+go get github.com/mjbmarques/MjGoLogger
 ```
 
 ## Usage
@@ -22,7 +22,7 @@ go get github.com/mjbma/MjGoLogger
 ```go
 package main
 
-import "github.com/mjbma/MjGoLogger"
+import "github.com/mjbmarques/MjGoLogger"
 
 func main() {
     // Setup logger with a log file

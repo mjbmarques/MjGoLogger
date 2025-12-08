@@ -5,27 +5,37 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"time"
 )
 
 var myLogger *log.Logger
 var file *os.File
 
-func Setup(fileName string) {
+func Setup(fileName string) error {
 
+	// Take care of log rotation by renaming existing file
+	if fileExists(fileName) {
+		renameFile(fileName)
+	}
+
+	// Create new log file
 	var err error
 	file, err = os.Create(fileName)
 	if err != nil {
 		fmt.Println("ERROR: failed to create file with filename: ", fileName)
-		return
+		return err
 	}
 	myLogger = log.New(file, "", log.LstdFlags)
+	return nil
 }
 
-func Stop() {
+func Stop() error {
 	err := file.Close()
 	if err != nil {
 		fmt.Println("Error: failed to close file with filename: " + file.Name())
+		return err
 	}
+	return nil
 }
 
 func Info(msg string, args ...any) {
@@ -42,6 +52,21 @@ func Warn(msg string, args ...any) {
 
 func Error(msg string, args ...any) {
 	logMessage("[ERROR]", msg, args...)
+}
+
+func renameFile(oldName string) {
+	// Append timestamp to old file name with format YYYYMMDD_HHMMSS.ms, based on time lib's format.go reference.
+	timestamp := time.Now().Format("20060102_150405.00")
+	newFileName := oldName + "." + timestamp
+	err := os.Rename(oldName, newFileName)
+	if err != nil {
+		fmt.Println("ERROR: failed to rename existing file: ", oldName, "to", newFileName)
+	}
+}
+
+func fileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	return err == nil
 }
 
 func logMessage(severity string, msg string, args ...any) {
